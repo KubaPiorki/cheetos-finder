@@ -1,0 +1,15 @@
+{
+  "name": "cheetos-finder",
+  "version": "2.2.0",
+  "description": "Cheetos Finder - Nick Lookup Tool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

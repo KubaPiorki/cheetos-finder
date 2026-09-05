@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Cheetos Finder 🔥</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== EKRAN LICENCJI ========== -->
+    <div id="licenseScreen" class="license-screen">
+        <div class="license-bg">
+            <div class="license-particles">
+                <div class="l-particle"></div>
+                <div class="l-particle"></div>
+                <div class="l-particle"></div>
+                <div class="l-particle"></div>
+                <div class="l-particle"></div>
+            </div>
+        </div>
+        
+        <div class="license-container">
+            <div class="license-box">
+                <div class="license-header">
+                    <div class="lock-icon">🔐</div>
+                    <h1>CHEETOS FINDER</h1>
+                    <p class="license-version">v2.2 Premium</p>
+                </div>
+                
+                <div class="license-body">
+                    <div class="license-icon-big">🔑</div>
+                    <h2>Wprowadź klucz licencji</h2>
+                    <p class="license-desc">Aby uzyskać dostęp do narzędzia, wprowadź prawidłowy klucz aktywacyjny.</p>
+                    
+                    <div class="license-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="licenseInput" 
+                            placeholder="XXXX-XXXX-XXXX" 
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                        <div class="license-input-glow"></div>
+                    </div>
+                    
+                    <button id="licenseBtn" class="license-btn" onclick="checkLicense()">
+                        <span class="license-btn-icon">🚀</span>
+                        <span>AKTYWUJ</span>
+                    </button>
+                    
+                    <div id="licenseError" class="license-error hidden">
+                        <span>❌</span> Nieprawidłowy klucz licencji!
+                    </div>
+                    
+                    <div id="licenseSuccess" class="license-success hidden">
+                        <span>✅</span> Licencja aktywowana!
+                    </div>
+                </div>
+                
+                <div class="license-footer">
+                    <p>💡 Nie masz klucza? <a href="https://discord.gg/kfay5sE34U" target="_blank">Dołącz do Discord</a></p>
+                </div>
+            </div>
+            
+            <div class="license-features">
+                <div class="feature">
+                    <span class="feature-icon">🔍</span>
+                    <span>Wyszukiwanie nicków</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📡</span>
+                    <span>Ping IP</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📁</span>
+                    <span>78+ baz danych</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== GŁÓWNA APLIKACJA (ukryta na start) ========== -->
+    <div id="mainApp" class="main-app hidden">
+        
+        <!-- Animated Background -->
+        <div class="bg-animation">
+            <div class="lava-layer"></div>
+            <div class="heat-wave"></div>
+        </div>
+
+        <!-- Lava Bubbles -->
+        <div class="lava-lamp">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+        </div>
+
+        <!-- Floating Embers -->
+        <div class="embers">
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+            <div class="ember"></div>
+        </div>
+
+        <!-- Discord Button -->
+        <a href="https://discord.gg/kfay5sE34U" target="_blank" class="discord-btn">
+            <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <span>Dołącz do Discord</span>
+        </a>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="logout()" title="Wyloguj">
+            🚪
+        </button>
+
+        <!-- Main Container -->
+        <div class="container">
+            
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo-flames">
+                    <span class="flame flame-left">🔥</span>
+                    <div class="logo-main">
+                        <div class="logo-cheetos">
+                            <span class="letter">C</span>
+                            <span class="letter">H</span>
+                            <span class="letter">E</span>
+                            <span class="letter">E</span>
+                            <span class="letter">T</span>
+                            <span class="letter">O</span>
+                            <span class="letter">S</span>
+                        </div>
+                        <div class="logo-finder">FINDER</div>
+                    </div>
+                    <span class="flame flame-right">🔥</span>
+                </div>
+                <p class="tagline">
+                    <span class="volcano">🌋</span>
+                    Znajdź każdego w płomieniach
+                    <span class="volcano">🌋</span>
+                </p>
+                <div class="license-badge">
+                    <span class="badge-icon">✅</span>
+                    <span class="badge-text">Licencja aktywna</span>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number" id="fileCount">78</span>
+                        <span class="stat-label">baz danych</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-number">∞</span>
+                        <span class="stat-label">rekordów</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-box">
+                    <div class="search-glow"></div>
+                    <div class="search-inner">
+                        <div class="input-wrapper">
+                            <span class="search-icon">🔍</span>
+                            <input 
+                                type="text" 
+                                id="nickInput" 
+                                placeholder="Wpisz nick gracza..." 
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                            <div class="input-line"></div>
+                        </div>
+                        <button id="searchBtn" onclick="searchNick()">
+                            <span class="btn-text">SZUKAJ</span>
+                            <span class="btn-fire">🔥</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading hidden">
+                <div class="loader-container">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                    <span class="loader-icon">🔥</span>
+                </div>
+                <p class="loading-text">Przeszukuję płomienie<span class="dots"></span></p>
+            </div>
+
+            <!-- Not Found -->
+            <div id="notFound" class="message-box not-found hidden">
+                <div class="message-icon">😢</div>
+                <h3>NIE ZNALEZIONO</h3>
+                <p>Ten nick spalił się w lawie...</p>
+                <div class="message-decoration"></div>
+            </div>
+
+            <!-- Error -->
+            <div id="error" class="message-box error-box hidden">
+                <div class="message-icon">⚠️</div>
+                <h3>BŁĄD</h3>
+                <p id="errorMessage"></p>
+                <div class="message-decoration"></div>
+            </div>
+
+        </div>
+
+        <!-- Result Modal -->
+        <div id="resultModal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content">
+                    
+                    <!-- Close Button -->
+                    <button class="modal-close" onclick="closeModal()">
+                        <span>✕</span>
+                    </button>
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <div class="header-bg"></div>
+                        <div class="header-content">
+                            <span class="header-icon left">🧀</span>
+                            <div class="header-text">
+                                <h2>ZNALEZIONO</h2>
+                                <div class="header-line"></div>
+                            </div>
+                            <span class="header-icon right">🧀</span>
+                        </div>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        
+                        <!-- Result Items -->
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-icon">👤</div>
+                                <div class="result-data">
+                                    <span class="result-label">NICK</span>
+                                    <span id="resultNick" class="result-value"></span>
+                                </div>
+                            </div>
+
+                            <div class="result-item highlight">
+                                <div class="result-icon">🌐</div>
+                                <div class="result-data">
+                                    <span class="result-label">ADRES IP</span>
+                                    <span id="resultIP" class="result-value ip"></span>
+                                </div>
+                                <button class="copy-mini" onclick="copyIP()" title="Kopiuj IP">
+                                    📋
+                                </button>
+                            </div>
+
+                            <div class="result-item">
+                                <div class="result-icon">📁</div>
+                                <div class="result-data">
+                                    <span class="result-label">ŹRÓDŁO</span>
+                                    <span id="resultFile" class="result-value file"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ping Section -->
+                        <div class="ping-section">
+                            <button id="pingBtn" class="ping-btn" onclick="togglePing()">
+                                <span class="ping-btn-icon">📡</span>
+                                <span class="ping-btn-text">START PING</span>
+                            </button>
+
+                            <div id="pingResult" class="ping-result hidden">
+                                <div class="console-header">
+                                    <span class="console-dot red"></span>
+                                    <span class="console-dot yellow"></span>
+                                    <span class="console-dot green"></span>
+                                    <span class="console-title">Terminal - Ping</span>
+                                </div>
+                                <div id="pingConsole" class="ping-console"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button class="footer-btn copy-btn" onclick="copyIP()">
+                            <span class="btn-icon">📋</span>
+                            <span>Kopiuj IP</span>
+                        </button>
+                        <button class="footer-btn close-btn" onclick="closeModal()">
+                            <span class="btn-icon">✖️</span>
+                            <span>Zamknij</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <p>🔥 <strong>Cheetos Finder</strong> © 2024</p>
+                <p class="footer-sub">Powered by Lava 🌋</p>
+            </div>
+        </footer>
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
