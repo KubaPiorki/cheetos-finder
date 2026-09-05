@@ -1,3 +1,4 @@
+// Added route for /admin_login and ensure ping endpoints are available for main UI
 const express = require('express');
 const path = require('path');
 const ping = require('ping');
@@ -36,6 +37,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Admin login page — serve a simple admin login UI if present in public/
+app.get('/admin_login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin_login.html'));
+});
+
 // Endpoint pingujący IP po stronie serwera
 app.get('/api/ping', async (req, res) => {
   const ip = req.query.ip;
@@ -53,12 +59,43 @@ app.get('/api/ping', async (req, res) => {
   }
 
   try {
-    const result = await ping.promise.probe(ip, { timeout: 3 }); // timeout w sekundach
+    const timeoutSec = parseInt(req.query.timeout || '3', 10);
+    const result = await ping.promise.probe(ip, { timeout: timeoutSec }); // timeout w sekundach
     const ping_ms = result.time && result.time !== 'unknown' ? Number(result.time) : null;
     return res.json({ ip, alive: !!result.alive, ping_ms });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
+});
+
+// POST multi-ping endpoint for batching
+app.use(express.json());
+app.post('/api/ping-multi', async (req, res) => {
+  const ips = Array.isArray(req.body.ips) ? req.body.ips : [];
+  const timeout = parseInt(req.body.timeout || '3', 10);
+  if (!ips.length) return res.status(400).json({ error: 'ips array required in body' });
+
+  const concurrency = parseInt(req.body.concurrency || '10', 10);
+  const results = [];
+
+  async function runChunk(chunk) {
+    const promises = chunk.map(ip =>
+      ping.promise
+        .probe(ip, { timeout })
+        .then(r => ({ ip, alive: r.alive, time: r.time }))
+        .catch(e => ({ ip, error: e.message }))
+    );
+    const resolved = await Promise.all(promises);
+    results.push(...resolved);
+  }
+
+  for (let i = 0; i < ips.length; i += concurrency) {
+    const chunk = ips.slice(i, i + concurrency);
+    // eslint-disable-next-line no-await-in-loop
+    await runChunk(chunk);
+  }
+
+  res.json(results);
 });
 
 // Start serwera
