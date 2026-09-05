@@ -25,7 +25,7 @@
                 <div class="license-header">
                     <div class="lock-icon">🔐</div>
                     <h1>FAST MOG</h1>
-                    <p class="license-version">v2.2 Premium</p>
+                    <p class="license-version">v2.3 Premium</p>
                 </div>
                 
                 <div class="license-body">
@@ -70,11 +70,11 @@
                 </div>
                 <div class="feature">
                     <span class="feature-icon">📡</span>
-                    <span>Ping IP (symulowany dla lokalnych danych)</span>
+                    <span>Ping wszystkich IP naraz</span>
                 </div>
                 <div class="feature">
-                    <span class="feature-icon">📁</span>
-                    <span>Dodawanie baz przez admina</span>
+                    <span class="feature-icon">⚡</span>
+                    <span>Szybkie wyniki i auto-ping</span>
                 </div>
             </div>
         </div>
@@ -154,7 +154,7 @@
                 </div>
                 <p class="tagline">
                     <span class="volcano">🌋</span>
-                    Znajdź rekordy szybko i czytelnie
+                    Wszystkie IP na raz + Auto Ping
                     <span class="volcano">🌋</span>
                 </p>
                 <div class="license-badge">
@@ -263,44 +263,10 @@
                                     <span id="resultNick" class="result-value"></span>
                                 </div>
                             </div>
-
-                            <div class="result-item highlight">
-                                <div class="result-icon">🌐</div>
-                                <div class="result-data">
-                                    <span class="result-label">ADRES IP</span>
-                                    <span id="resultIP" class="result-value ip"></span>
-                                </div>
-                                <button class="copy-mini" onclick="copyIP()" title="Kopiuj IP">
-                                    📋
-                                </button>
-                            </div>
-
-                            <div class="result-item">
-                                <div class="result-icon">📁</div>
-                                <div class="result-data">
-                                    <span class="result-label">ŹRÓDŁO</span>
-                                    <span id="resultFile" class="result-value file"></span>
-                                </div>
-                            </div>
                         </div>
 
-                        <!-- Ping Section -->
-                        <div class="ping-section">
-                            <button id="pingBtn" class="ping-btn" onclick="togglePing()">
-                                <span class="ping-btn-icon">📡</span>
-                                <span class="ping-btn-text">START PING</span>
-                            </button>
-
-                            <div id="pingResult" class="ping-result hidden">
-                                <div class="console-header">
-                                    <span class="console-dot red"></span>
-                                    <span class="console-dot yellow"></span>
-                                    <span class="console-dot green"></span>
-                                    <span class="console-title">Terminal - Ping</span>
-                                </div>
-                                <div id="pingConsole" class="ping-console"></div>
-                            </div>
-                        </div>
+                        <!-- IPs Table (wstawiana dynamicznie) -->
+                        <!-- Ping results bedą tutaj -->
 
                     </div>
 
@@ -308,7 +274,7 @@
                     <div class="modal-footer">
                         <button class="footer-btn copy-btn" onclick="copyIP()">
                             <span class="btn-icon">📋</span>
-                            <span>Kopiuj IP</span>
+                            <span>Kopiuj wszystkie IP</span>
                         </button>
                         <button class="footer-btn close-btn" onclick="closeModal()">
                             <span class="btn-icon">✖️</span>
@@ -364,8 +330,8 @@
         <!-- Footer -->
         <footer>
             <div class="footer-content">
-                <p>🔥 <strong>FAST MOG</strong> © 2026</p>
-                <p class="footer-sub">Szybkie i czytelne wyszukiwanie</p>
+                <p>🔥 <strong>FAST MOG v2.3</strong> © 2026</p>
+                <p class="footer-sub">Wszystkie IP naraz + Auto Ping</p>
             </div>
         </footer>
         
