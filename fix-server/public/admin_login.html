@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cheetos Finder — Admin Login (Fix)</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    header { display:flex; align-items:center; justify-content:space-between }
+    textarea { width:100%; height:100px; }
+    .grid { display:grid; grid-template-columns: 1fr 300px; gap: 16px; }
+    .results { background:#f7f7f7; padding:12px; border-radius:6px; height:300px; overflow:auto }
+    .row { display:flex; gap:8px; margin-bottom:8px }
+    .ip-item { padding:6px 8px; background:#fff; border-radius:4px; margin-bottom:6px; border:1px solid #eee }
+    .alive { color:green }
+    .dead { color:red }
+    .controls { display:flex; gap:8px; flex-wrap:wrap }
+    .muted { color:#666; font-size:0.9em }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cheetos Finder — Admin (Fix)</h1>
+    <div class="muted">Auto Ping — Nowość 2026</div>
+  </header>
+
+  <p>Tu możesz pingować pojedyncze IP lub listę adresów. Ten folder zawiera samodzielny serwer naprawczy (fix-server).</p>
+
+  <div class="grid">
+    <div>
+      <label for="ip-input">Wprowadź IP (po jednym w wierszu lub oddzielone przecinkiem):</label>
+      <textarea id="ip-input" placeholder="1.2.3.4\n5.6.7.8"></textarea>
+
+      <div class="controls" style="margin-top:8px">
+        <button id="ping-one">Pinguj pierwszy</button>
+        <button id="ping-all">Pinguj wszystkie</button>
+        <button id="start-auto">Start Auto Ping</button>
+        <button id="stop-auto" disabled>Stop Auto Ping</button>
+        <label style="display:flex;align-items:center;gap:6px;margin-left:8px"><span class="muted">Interwał (s)</span><input id="interval" type="number" min="5" value="30" style="width:72px;margin-left:6px"/></label>
+      </div>
+
+      <div style="margin-top:12px">
+        <label for="timeout">Timeout (s)</label>
+        <input id="timeout" type="number" min="1" value="5" style="width:80px;margin-left:6px"/>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="results" id="results">Brak wyników yet.</div>
+    </div>
+  </div>
+
+  <script src="js/ping.js"></script>
+</body>
+</html>

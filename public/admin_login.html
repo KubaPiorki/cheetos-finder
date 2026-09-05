@@ -1,200 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Cheetos Finder</title>
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/themes.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        }
-        
-        .login-container {
-            background: var(--bg-secondary);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .login-header h1 {
-            font-size: 28px;
-            color: var(--text-primary);
-            margin: 10px 0;
-        }
-        
-        .login-header p {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
-        }
-        
-        .login-btn:active {
-            transform: translateY(0);
-        }
-        
-        .error-message {
-            color: #ff6b6b;
-            font-size: 13px;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 6px;
-            display: none;
-        }
-        
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .back-link a {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cheetos Finder — Admin Login</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    header { display:flex; align-items:center; justify-content:space-between }
+    textarea { width:100%; height:100px; }
+    .grid { display:grid; grid-template-columns: 1fr 300px; gap: 16px; }
+    .results { background:#f7f7f7; padding:12px; border-radius:6px; height:300px; overflow:auto }
+    .row { display:flex; gap:8px; margin-bottom:8px }
+    .ip-item { padding:6px 8px; background:#fff; border-radius:4px; margin-bottom:6px; border:1px solid #eee }
+    .alive { color:green }
+    .dead { color:red }
+    .controls { display:flex; gap:8px; flex-wrap:wrap }
+    .muted { color:#666; font-size:0.9em }
+  </style>
 </head>
-<body class="theme-black">
-    <div class="login-container">
-        <div class="login-header">
-            <h1>🔐 Admin Panel</h1>
-            <p>Cheetos Finder</p>
-        </div>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Login</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="Wpisz login..."
-                    required
-                    autocomplete="off"
-                >
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Hasło</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Wpisz hasło..."
-                    required
-                    autocomplete="off"
-                >
-            </div>
-            
-            <button type="submit" class="login-btn">Zaloguj się</button>
-            
-            <div id="errorMessage" class="error-message"></div>
-        </form>
-        
-        <div class="back-link">
-            <a href="/">← Wróć na stronę główną</a>
-        </div>
+<body>
+  <header>
+    <h1>Cheetos Finder — Admin</h1>
+    <div class="muted">Auto Ping — Nowość 2026</div>
+  </header>
+
+  <p>Panel admina — możesz wykonywać pingi tutaj lub używać głównego narzędzia.</p>
+
+  <div class="grid">
+    <div>
+      <label for="ip-input">Wprowadź IP (po jednym w wierszu lub oddzielone przecinkiem):</label>
+      <textarea id="ip-input" placeholder="1.2.3.4\n5.6.7.8"></textarea>
+
+      <div class="controls" style="margin-top:8px">
+        <button id="ping-one">Pinguj pierwszy</button>
+        <button id="ping-all">Pinguj wszystkie</button>
+        <button id="start-auto">Start Auto Ping</button>
+        <button id="stop-auto" disabled>Stop Auto Ping</button>
+        <label style="display:flex;align-items:center;gap:6px;margin-left:8px"><span class="muted">Interwał (s)</span><input id="interval" type="number" min="5" value="30" style="width:72px;margin-left:6px"/></label>
+      </div>
+
+      <div style="margin-top:12px">
+        <label for="timeout">Timeout (s)</label>
+        <input id="timeout" type="number" min="1" value="5" style="width:80px;margin-left:6px"/>
+      </div>
+
     </div>
 
-    <script>
-        const ADMIN_USERNAME = 'larpik';
-        const ADMIN_PASSWORD = '2137';
-        
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMessage');
-            
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                // Ustaw sesję
-                localStorage.setItem('admin_session', 'true');
-                localStorage.setItem('admin_login_time', new Date().toISOString());
-                
-                // Przekieruj do panelu
-                window.location.href = '/admin';
-            } else {
-                errorMsg.textContent = '❌ Błędny login lub hasło!';
-                errorMsg.style.display = 'block';
-                document.getElementById('password').value = '';
-                
-                // Usuń wiadomość po 5 sekundach
-                setTimeout(() => {
-                    errorMsg.style.display = 'none';
-                }, 5000);
-            }
-        });
-        
-        // Fokus na input po załadowaniu
-        document.getElementById('username').focus();
-    </script>
+    <div>
+      <div class="results" id="results">Brak wyników yet.</div>
+    </div>
+  </div>
+
+  <script src="/js/ping.js"></script>
+  <script>
+    // reuse main ping.js functions if present, otherwise include simple inline handlers
+    (function(){
+      const textarea = document.getElementById('ip-input');
+      const pingOneBtn = document.getElementById('ping-one');
+      const pingAllBtn = document.getElementById('ping-all');
+      const startAutoBtn = document.getElementById('start-auto');
+      const stopAutoBtn = document.getElementById('stop-auto');
+      const intervalInput = document.getElementById('interval');
+      const timeoutInput = document.getElementById('timeout');
+      const resultsEl = document.getElementById('results');
+      let autoHandle = null;
+
+      function parseIps(text) {
+        if (!text) return [];
+        return text.split(/\s*[\n,]+\s*/).map(s => s.trim()).filter(Boolean);
+      }
+
+      async function pingOne() {
+        const ips = parseIps(textarea.value);
+        if (!ips.length) return alert('Wprowadź przynajmniej jedno IP');
+        const ip = ips[0];
+        try {
+          const timeout = parseInt(timeoutInput.value || '5', 10);
+          const res = await fetch(`/api/ping?ip=${encodeURIComponent(ip)}&timeout=${timeout}`);
+          if (!res.ok) throw new Error(await res.text());
+          const json = await res.json();
+          resultsEl.innerHTML = JSON.stringify(json, null, 2);
+        } catch (err) {
+          resultsEl.innerHTML = 'Błąd: ' + err.message;
+        }
+      }
+
+      async function pingAll() {
+        const ips = parseIps(textarea.value);
+        if (!ips.length) return alert('Wprowadź przynajmniej jedno IP');
+        try {
+          const timeout = parseInt(timeoutInput.value || '5', 10);
+          const res = await fetch('/api/ping-multi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ips, timeout, concurrency: 10 })
+          });
+          if (!res.ok) throw new Error(await res.text());
+          const json = await res.json();
+          resultsEl.innerHTML = json.map(r => `${r.ip} -> ${r.alive ? 'OK '+(r.time||r.ping_ms) : 'DOWN'}`).join('\n');
+        } catch (err) {
+          resultsEl.innerHTML = 'Błąd: ' + err.message;
+        }
+      }
+
+      pingOneBtn.addEventListener('click', pingOne);
+      pingAllBtn.addEventListener('click', pingAll);
+      startAutoBtn.addEventListener('click', ()=>{
+        if (autoHandle) return;
+        const intervalSec = Math.max(5, parseInt(intervalInput.value||'30',10));
+        pingAll();
+        autoHandle = setInterval(pingAll, intervalSec*1000);
+        startAutoBtn.disabled = true; stopAutoBtn.disabled = false;
+      });
+      stopAutoBtn.addEventListener('click', ()=>{
+        if (!autoHandle) return;
+        clearInterval(autoHandle); autoHandle=null; startAutoBtn.disabled=false; stopAutoBtn.disabled=true;
+      });
+    })();
+  </script>
 </body>
 </html>
