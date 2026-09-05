@@ -1,7 +1,7 @@
 {
-  "name": "cheetos-finder",
+  "name": "halaleaks",
   "version": "2.2.0",
-  "description": "Cheetos Finder - Nick Lookup Tool",
+  "description": "HalaLeaks - Nick Lookup Tool",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

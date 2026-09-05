@@ -1,5 +1,5 @@
 // ============================================================
-// 🔥 CHEETOS FINDER v2.2 - PEŁNY SKRYPT
+// 🔥 HALALEAKS v2.2 - PEŁNY SKRYPT
 // ============================================================
 
 // 🔐 SYSTEM LICENCJI
@@ -98,7 +98,7 @@ let pingCount = 0;
 
 // Sprawdź czy już zalogowany
 window.addEventListener('load', function() {
-    const savedLicense = localStorage.getItem('cheetos_license');
+    const savedLicense = localStorage.getItem('hala_license');
     
     if (savedLicense === VALID_LICENSE) {
         showMainApp();
@@ -110,7 +110,7 @@ window.addEventListener('load', function() {
         fileCountEl.textContent = dataFiles.length;
     }
     
-    console.log('🔥 CHEETOS FINDER v2.2 załadowany!');
+    console.log('🔥 HALALEAKS v2.2 załadowany!');
     console.log('📂 Plików do przeszukania: ' + dataFiles.length);
 });
 
@@ -146,7 +146,7 @@ function checkLicense() {
         licenseInput.disabled = true;
         
         // Zapisz w localStorage
-        localStorage.setItem('cheetos_license', VALID_LICENSE);
+        localStorage.setItem('hala_license', VALID_LICENSE);
         
         // Przejdź do aplikacji po 1.5s
         setTimeout(function() {
@@ -184,7 +184,7 @@ function showMainApp() {
 
 // Wyloguj
 function logout() {
-    localStorage.removeItem('cheetos_license');
+    localStorage.removeItem('hala_license');
     location.reload();
 }
 
@@ -653,7 +653,7 @@ document.head.appendChild(dynamicStyles);
 // ============================================================
 
 console.log('');
-console.log('%c 🔥 CHEETOS FINDER v2.2 🔥 ', 'background: #ff6600; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
+console.log('%c 🔥 HALALEAKS v2.2 🔥 ', 'background: #ff6600; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
 console.log('%c Powered by Lava 🌋 ', 'background: #cc3300; color: white; font-size: 12px; padding: 5px;');
 console.log('');
 console.log('📂 Pliki do przeszukania: ' + dataFiles.length);
