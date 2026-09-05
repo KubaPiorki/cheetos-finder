@@ -14,7 +14,10 @@ const { securityHeaders } = require('./middleware/security');
 const app = express();
 
 // Initialize database
-initializeDatabase();
+initializeDatabase().catch(err => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
+});
 
 // Security middleware
 app.use(helmet());
@@ -71,5 +74,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Fast Mog server running on port ${PORT}`);
+  console.log(`\n🚀 Fast Mog server running on port ${PORT}`);
+  console.log(`📝 Admin key: fastmog-larpik`);
+  console.log(`🔗 Visit: http://localhost:${PORT}\n`);
 });

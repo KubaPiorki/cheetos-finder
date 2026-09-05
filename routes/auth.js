@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { db } = require('../database/db');
-const { sanitizeInput, getClientIP, validateIP } = require('../middleware/security');
+const { sanitizeInput, getClientIP } = require('../middleware/security');
 const crypto = require('crypto');
 
 const router = express.Router();
@@ -21,44 +21,47 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ error: 'Invalid key format' });
   }
 
-  const sanitizedKey = sanitizeInput(key).trim();
+  const sanitizedKey = key.trim();
+  console.log(`🔐 Login attempt with key: ${sanitizedKey}`);
 
   // Query with parameterized query to prevent SQL injection
   db.get(
     'SELECT * FROM keys WHERE key_value = ? LIMIT 1',
     [sanitizedKey],
-    async (err, row) => {
+    (err, row) => {
       if (err) {
-        console.error('Database error:', err);
+        console.error('❌ Database error:', err);
         return res.status(500).json({ error: 'Internal server error' });
       }
 
       if (!row) {
         console.log(`❌ Login failed: Key not found - ${sanitizedKey}`);
-        // Log failed attempt
         db.run(
           'INSERT INTO audit_log (action, ip_address, status, details) VALUES (?, ?, ?, ?)',
-          ['login_failed', clientIP, 'failed', 'Invalid key']
+          ['login_failed', clientIP, 'failed', 'Key not found']
         );
         return res.status(401).json({ error: 'Klucz nie prawidłowy' });
       }
 
-      console.log(`🔍 Found key: ${row.key_value}, is_admin: ${row.is_admin}`);
+      console.log(`✅ Found key in DB: ${row.key_value}, admin: ${row.is_admin}`);
 
       // Check if key is locked
-      if (row.is_locked && new Date(row.lock_until) > new Date()) {
+      if (row.is_locked && row.lock_until && new Date(row.lock_until) > new Date()) {
+        console.log(`❌ Key is locked: ${sanitizedKey}`);
         return res.status(403).json({ error: 'Klucz jest zablokowany. Spróbuj później.' });
       }
 
       // Check if key is expired
       if (row.expires_at && new Date(row.expires_at) < new Date()) {
+        console.log(`❌ Key expired: ${sanitizedKey}`);
         return res.status(403).json({ error: 'Klucz wygasł' });
       }
 
       // Verify key hash
+      console.log(`🔍 Comparing key hash...`);
       bcrypt.compare(sanitizedKey, row.key_hash, (compareErr, isValid) => {
         if (compareErr) {
-          console.error('Hash comparison error:', compareErr);
+          console.error('❌ Hash comparison error:', compareErr);
           return res.status(500).json({ error: 'Internal server error' });
         }
 
@@ -66,15 +69,15 @@ router.post('/login', (req, res) => {
           console.log(`❌ Hash mismatch for key: ${sanitizedKey}`);
           db.run(
             'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
-            [row.id, 'login_failed', clientIP, 'failed', 'Invalid hash']
+            [row.id, 'login_failed', clientIP, 'failed', 'Hash mismatch']
           );
           return res.status(401).json({ error: 'Klucz nie prawidłowy' });
         }
 
-        console.log(`✅ Hash valid for key: ${sanitizedKey}`);
+        console.log(`✅ Hash valid! Creating token...`);
 
-        // Check IP binding
-        if (row.first_ip && row.first_ip !== clientIP) {
+        // Check IP binding only if not admin
+        if (!row.is_admin && row.first_ip && row.first_ip !== clientIP) {
           console.log(`❌ IP mismatch: expected ${row.first_ip}, got ${clientIP}`);
           db.run(
             'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
@@ -83,22 +86,22 @@ router.post('/login', (req, res) => {
           return res.status(403).json({ error: 'Klucz nie prawidłowy' });
         }
 
-        // Bind IP on first login
-        if (!row.first_ip) {
+        // Bind IP on first login (only for non-admin)
+        if (!row.is_admin && !row.first_ip) {
           db.run(
             'UPDATE keys SET first_ip = ?, current_ip = ? WHERE id = ?',
             [clientIP, clientIP, row.id]
           );
         }
 
-        // Generate JWT token (NO SENSITIVE DATA IN TOKEN)
+        // Generate JWT token
         const token = jwt.sign(
           {
             keyId: row.id,
             is_admin: row.is_admin,
             iat: Math.floor(Date.now() / 1000)
           },
-          process.env.JWT_SECRET,
+          process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_this_in_production_at_least_32_characters',
           { expiresIn: process.env.TOKEN_EXPIRY || '24h' }
         );
 
@@ -108,12 +111,12 @@ router.post('/login', (req, res) => {
           [row.id, 'login_success', clientIP, 'success']
         );
 
-        console.log(`✅ Login successful for key: ${sanitizedKey}, admin: ${row.is_admin}`);
+        console.log(`✅ Login successful! Admin: ${row.is_admin}`);
 
         res.json({
           success: true,
           token,
-          is_admin: row.is_admin
+          is_admin: row.is_admin === 1 || row.is_admin === true
         });
       });
     }
@@ -122,7 +125,6 @@ router.post('/login', (req, res) => {
 
 // Generate new license key (admin only)
 router.post('/generate-key', (req, res) => {
-  // Verify admin would be done in middleware in full implementation
   const { days } = req.body;
 
   if (!days || typeof days !== 'number' || days < 1 || days > 365) {
