@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheetos Finder - Live Ping Check</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/themes.css">
+</head>
+<body class="theme-black">
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">🌶️ Cheetos Finder</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/admin_login" class="nav-link admin-link">Admin</a>
+            </div>
+        </nav>
+
+        <!-- Global Message -->
+        <div id="globalMessage" class="global-message" style="display: none;"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Ping Check Section -->
+            <section class="ping-section">
+                <h1>Live Ping Check</h1>
+                <p class="subtitle">Wyszukaj IP i sprawdź czy pinguje</p>
+
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="ipInput" 
+                        class="search-input" 
+                        placeholder="Wpisz adres IP..."
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="search-btn">Ping</button>
+                </div>
+
+                <!-- Search Results -->
+                <div id="results" class="results-container"></div>
+
+                <!-- Live Results Table -->
+                <div id="liveResults" class="live-results">
+                    <div class="results-header">
+                        <h2>Wyniki</h2>
+                        <button id="clearBtn" class="clear-btn">Wyczyść</button>
+                    </div>
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>IP</th>
+                                <th>Status</th>
+                                <th>Response Time (ms)</th>
+                                <th>Akcja</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/ping.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>
