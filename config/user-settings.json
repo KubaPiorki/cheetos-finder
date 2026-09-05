@@ -1,0 +1,22 @@
+{
+  "user": {
+    "uuid": "219644558",
+    "login": "KubaPiorki",
+    "accountCreated": "2026-09-05T17:42:29Z",
+    "accountCreatedReadable": "5 godzin temu",
+    "avatar": "https://avatars.githubusercontent.com/u/219644558?v=4"
+  },
+  "license": {
+    "type": "Free",
+    "status": "Active",
+    "licenseStart": "2026-09-05",
+    "licenseExpiry": "2027-09-05",
+    "daysRemaining": 365,
+    "isExpired": false
+  },
+  "preferences": {
+    "language": "pl",
+    "notifications": true,
+    "theme": "auto"
+  }
+}
