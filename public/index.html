@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Mog - License Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>⚡ Fast Mog</h1>
+                    <p>License Key Management System</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="keyInput">Klucz Dostępu:</label>
+                        <input 
+                            type="password" 
+                            id="keyInput" 
+                            placeholder="Wprowadź swój klucz..."
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-login">Zaloguj się</button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                <div class="login-footer">
+                    <p>🔒 Wszystkie dane są szyfrowane</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <!-- Navigation Bar -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <h2>⚡ Fast Mog</h2>
+                </div>
+                <div class="navbar-right">
+                    <div id="adminOptions" class="admin-options" style="display: none;">
+                        <button id="licenseGenBtn" class="nav-btn" title="Generator Licencji">
+                            🔑 Generator Licencji
+                        </button>
+                        <button id="leaksBtn" class="nav-btn" title="Dodaj Wyciekami">
+                            📁 Add Leaks
+                        </button>
+                        <button id="resetIpBtn" class="nav-btn" title="Resetuj IP">
+                            🔄 Reset IP
+                        </button>
+                    </div>
+                    <button id="settingsBtn" class="nav-btn" title="Ustawienia">
+                        ⚙️ Ustawienia
+                    </button>
+                    <button id="logoutBtn" class="nav-btn" title="Wyloguj się">
+                        🚪 Wyloguj
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="dashboard-content">
+                <!-- License Info Card -->
+                <div id="licenseCard" class="card license-card">
+                    <div class="card-header">
+                        <h3>📋 Informacje o Licencji</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="license-info">
+                            <div class="info-row">
+                                <span class="label">Status:</span>
+                                <span id="licenseStatus" class="value status-badge">Ładowanie...</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Ważna do:</span>
+                                <span id="expiresAt" class="value">Ładowanie...</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Dni pozostałe:</span>
+                                <span id="daysRemaining" class="value days-counter">Ładowanie...</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Utworzona:</span>
+                                <span id="createdAt" class="value">Ładowanie...</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="licenseProgress" class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Section -->
+                <div id="searchCard" class="card search-card">
+                    <div class="card-header">
+                        <h3>🔍 Wyszukiwanie Gracza</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-container">
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Wpisz nick gracza lub IP..."
+                                class="search-input"
+                            >
+                            <button id="searchBtn" class="btn btn-primary">Szukaj</button>
+                        </div>
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚙️ Ustawienia Konta</h2>
+                    <button class="close-btn" id="closeSettings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h3>Informacje Konta</h3>
+                        <div class="setting-item">
+                            <label>UUID Konta:</label>
+                            <div class="setting-value copyable" id="accountUUID">
+                                <span id="uuidText">Ładowanie...</span>
+                                <button class="copy-btn" id="copyUUID" title="Kopiuj">📋</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Data Utworzenia:</label>
+                            <div class="setting-value" id="accountCreated">Ładowanie...</div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Ostatni Login:</label>
+                            <div class="setting-value" id="lastLogin">Ładowanie...</div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Licencja</h3>
+                        <div class="setting-item">
+                            <label>Dni Ważności:</label>
+                            <div class="setting-value" id="licenseValidity">Ładowanie...</div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Wygasa:</label>
+                            <div class="setting-value" id="licenseExpires">Ładowanie...</div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Dni Pozostałe:</label>
+                            <div class="setting-value" id="licenseDaysLeft">Ładowanie...</div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Bezpieczeństwo</h3>
+                        <div class="setting-item">
+                            <label>IP Przypisane:</label>
+                            <div class="setting-value" id="boundIP">Ładowanie...</div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Status IP:</label>
+                            <div class="setting-value status-badge" id="ipStatus">Ładowanie...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="closeSettingsBtn">Zamknij</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- License Generator Modal (Admin Only) -->
+        <div id="licenseGenModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔑 Generator Licencji</h2>
+                    <button class="close-btn" id="closeLicenseGen">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="daysInput">Liczba Dni Ważności:</label>
+                        <input 
+                            type="number" 
+                            id="daysInput" 
+                            min="1" 
+                            max="365" 
+                            value="30"
+                            class="form-input"
+                        >
+                    </div>
+                    <button id="generateBtn" class="btn btn-primary btn-block">Generuj Klucz</button>
+                    <div id="generatedKeyContainer" class="generated-key-container" style="display: none;">
+                        <div class="form-group">
+                            <label>Wygenerowany Klucz:</label>
+                            <div class="generated-key copyable">
+                                <span id="generatedKeyText"></span>
+                                <button class="copy-btn" id="copyGeneratedKey" title="Kopiuj">📋</button>
+                            </div>
+                        </div>
+                        <div class="key-info">
+                            <p id="keyValidUntil"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Leaks Modal (Admin Only) -->
+        <div id="leaksModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📁 Dodaj Wyciekami</h2>
+                    <button class="close-btn" id="closeLeaks">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                        <div class="upload-icon">📤</div>
+                        <p>Przeciągnij plik .txt lub kliknij aby wybrać</p>
+                        <small>Format: nick|IP (jeden na linię)</small>
+                    </div>
+                    <div id="uploadProgress" style="display: none;" class="upload-progress">
+                        <div class="progress-bar">
+                            <div id="uploadProgressFill" class="progress-fill"></div>
+                        </div>
+                        <p id="uploadStatus">Uploadowanie...</p>
+                    </div>
+                    <div id="uploadResults" style="display: none;" class="upload-results">
+                        <div class="results-summary">
+                            <p><strong id="successCount">0</strong> wpisów dodanych</p>
+                            <p><strong id="failCount">0</strong> błędów</p>
+                        </div>
+                        <div id="errorsList" class="errors-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reset IP Modal (Admin Only) -->
+        <div id="resetIpModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔄 Resetuj IP Klucza</h2>
+                    <button class="close-btn" id="closeResetIp">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="keyIdInput">ID Klucza:</label>
+                        <input 
+                            type="number" 
+                            id="keyIdInput" 
+                            placeholder="Wpisz ID klucza"
+                            class="form-input"
+                        >
+                    </div>
+                    <button id="resetBtn" class="btn btn-primary btn-block">Resetuj IP</button>
+                    <div id="resetMessage" class="message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
