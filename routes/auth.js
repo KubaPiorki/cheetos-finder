@@ -34,6 +34,7 @@ router.post('/login', (req, res) => {
       }
 
       if (!row) {
+        console.log(`❌ Login failed: Key not found - ${sanitizedKey}`);
         // Log failed attempt
         db.run(
           'INSERT INTO audit_log (action, ip_address, status, details) VALUES (?, ?, ?, ?)',
@@ -41,6 +42,8 @@ router.post('/login', (req, res) => {
         );
         return res.status(401).json({ error: 'Klucz nie prawidłowy' });
       }
+
+      console.log(`🔍 Found key: ${row.key_value}, is_admin: ${row.is_admin}`);
 
       // Check if key is locked
       if (row.is_locked && new Date(row.lock_until) > new Date()) {
@@ -53,53 +56,65 @@ router.post('/login', (req, res) => {
       }
 
       // Verify key hash
-      const isValid = await bcrypt.compare(sanitizedKey, row.key_hash);
-      if (!isValid) {
-        db.run(
-          'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
-          [row.id, 'login_failed', clientIP, 'failed', 'Invalid hash']
+      bcrypt.compare(sanitizedKey, row.key_hash, (compareErr, isValid) => {
+        if (compareErr) {
+          console.error('Hash comparison error:', compareErr);
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        if (!isValid) {
+          console.log(`❌ Hash mismatch for key: ${sanitizedKey}`);
+          db.run(
+            'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
+            [row.id, 'login_failed', clientIP, 'failed', 'Invalid hash']
+          );
+          return res.status(401).json({ error: 'Klucz nie prawidłowy' });
+        }
+
+        console.log(`✅ Hash valid for key: ${sanitizedKey}`);
+
+        // Check IP binding
+        if (row.first_ip && row.first_ip !== clientIP) {
+          console.log(`❌ IP mismatch: expected ${row.first_ip}, got ${clientIP}`);
+          db.run(
+            'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
+            [row.id, 'login_failed', clientIP, 'failed', 'IP mismatch']
+          );
+          return res.status(403).json({ error: 'Klucz nie prawidłowy' });
+        }
+
+        // Bind IP on first login
+        if (!row.first_ip) {
+          db.run(
+            'UPDATE keys SET first_ip = ?, current_ip = ? WHERE id = ?',
+            [clientIP, clientIP, row.id]
+          );
+        }
+
+        // Generate JWT token (NO SENSITIVE DATA IN TOKEN)
+        const token = jwt.sign(
+          {
+            keyId: row.id,
+            is_admin: row.is_admin,
+            iat: Math.floor(Date.now() / 1000)
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: process.env.TOKEN_EXPIRY || '24h' }
         );
-        return res.status(401).json({ error: 'Klucz nie prawidłowy' });
-      }
 
-      // Check IP binding
-      if (row.first_ip && row.first_ip !== clientIP) {
+        // Log successful login
         db.run(
-          'INSERT INTO audit_log (key_id, action, ip_address, status, details) VALUES (?, ?, ?, ?, ?)',
-          [row.id, 'login_failed', clientIP, 'failed', 'IP mismatch']
+          'INSERT INTO audit_log (key_id, action, ip_address, status) VALUES (?, ?, ?, ?)',
+          [row.id, 'login_success', clientIP, 'success']
         );
-        return res.status(403).json({ error: 'Klucz nie prawidłowy' });
-      }
 
-      // Bind IP on first login
-      if (!row.first_ip) {
-        db.run(
-          'UPDATE keys SET first_ip = ?, current_ip = ? WHERE id = ?',
-          [clientIP, clientIP, row.id]
-        );
-      }
+        console.log(`✅ Login successful for key: ${sanitizedKey}, admin: ${row.is_admin}`);
 
-      // Generate JWT token (NO SENSITIVE DATA IN TOKEN)
-      const token = jwt.sign(
-        {
-          keyId: row.id,
-          is_admin: row.is_admin,
-          iat: Math.floor(Date.now() / 1000)
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.TOKEN_EXPIRY || '24h' }
-      );
-
-      // Log successful login
-      db.run(
-        'INSERT INTO audit_log (key_id, action, ip_address, status) VALUES (?, ?, ?, ?)',
-        [row.id, 'login_success', clientIP, 'success']
-      );
-
-      res.json({
-        success: true,
-        token,
-        is_admin: row.is_admin
+        res.json({
+          success: true,
+          token,
+          is_admin: row.is_admin
+        });
       });
     }
   );

@@ -1,7 +1,6 @@
 const express = require('express');
 const { db } = require('../database/db');
 const { verifyToken, verifyAdmin, getClientIP } = require('../middleware/security');
-const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
@@ -26,13 +25,20 @@ router.get('/info', verifyToken, (req, res) => {
       }
 
       const now = new Date();
-      const expiresAt = new Date(row.license_expires);
+      let expiresAt = row.license_expires ? new Date(row.license_expires) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+      
+      // For admin key without license, set default expiry
+      if (!row.license_expires) {
+        expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+      }
+      
       const daysRemaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+      const daysValid = row.days_valid || 365;
 
       res.json({
         is_admin: row.is_admin,
-        days_valid: row.days_valid,
-        expires_at: row.license_expires,
+        days_valid: daysValid,
+        expires_at: expiresAt.toISOString(),
         days_remaining: Math.max(0, daysRemaining),
         status: row.status,
         created_at: row.created_at

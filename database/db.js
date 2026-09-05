@@ -1,6 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../data/fastmog.db');
 
@@ -108,9 +110,7 @@ const initializeDatabase = () => {
       db.run('CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON audit_log(created_at)');
 
       // Insert admin key on first run
-      const adminKey = process.env.ADMIN_KEY;
-      const crypto = require('crypto');
-      const bcrypt = require('bcryptjs');
+      const adminKey = process.env.ADMIN_KEY || 'fastmog-larpik';
 
       db.get('SELECT COUNT(*) as count FROM keys WHERE is_admin = 1', (err, row) => {
         if (err) {
@@ -130,18 +130,19 @@ const initializeDatabase = () => {
             db.run(
               'INSERT INTO keys (key_value, key_hash, is_admin, status) VALUES (?, ?, 1, ?)',
               [adminKey, hash, 'active'],
-              (err) => {
-                if (err) {
-                  console.error('Error inserting admin key:', err);
-                  reject(err);
+              function(insertErr) {
+                if (insertErr) {
+                  console.error('Error inserting admin key:', insertErr);
+                  reject(insertErr);
                 } else {
-                  console.log('✅ Admin key initialized');
+                  console.log('✅ Admin key initialized: fastmog-larpik');
                   resolve();
                 }
               }
             );
           });
         } else {
+          console.log('✅ Admin key already exists');
           resolve();
         }
       });
