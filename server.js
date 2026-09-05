@@ -17,6 +17,6 @@ app.get('/', (req, res) => {
 
 // Start serwera
 app.listen(PORT, () => {
-    console.log('🔥 Cheetos Finder działa na porcie ' + PORT);
+    console.log('🔥 HalaLeaks działa na porcie ' + PORT);
     console.log('🌐 http://localhost:' + PORT);
 });
