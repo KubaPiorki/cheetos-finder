@@ -41,11 +41,12 @@ router.post('/upload', verifyToken, verifyAdmin, upload.single('file'), async (r
     const errors = [];
 
     for (const line of lines) {
-      const parts = line.split('|').map(p => p.trim());
+      // Split by colon instead of pipe
+      const parts = line.split(':').map(p => p.trim());
       
       if (parts.length < 2) {
         errorCount++;
-        errors.push(`Invalid format: ${line}`);
+        errors.push(`Nieprawidłowy format: ${line}`);
         continue;
       }
 
@@ -55,13 +56,13 @@ router.post('/upload', verifyToken, verifyAdmin, upload.single('file'), async (r
       // Validate inputs
       if (!nickname || nickname.length > 100) {
         errorCount++;
-        errors.push(`Invalid nickname: ${nickname}`);
+        errors.push(`Nieprawidłowy nick: ${nickname}`);
         continue;
       }
 
       if (!validateIP(ip)) {
         errorCount++;
-        errors.push(`Invalid IP: ${ip}`);
+        errors.push(`Nieprawidłowy IP: ${ip}`);
         continue;
       }
 
@@ -74,7 +75,7 @@ router.post('/upload', verifyToken, verifyAdmin, upload.single('file'), async (r
           if (err) {
             console.error('Error inserting leak:', err);
             errorCount++;
-            errors.push(`Failed to insert ${nickname}`);
+            errors.push(`Błąd dodawania ${nickname}`);
           } else {
             successCount++;
           }

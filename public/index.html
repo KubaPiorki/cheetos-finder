@@ -219,11 +219,16 @@
                     <button class="close-btn" id="closeLeaks">&times;</button>
                 </div>
                 <div class="modal-body">
+                    <div class="format-info">
+                        <p><strong>Format pliku:</strong> <code>nick:IP</code></p>
+                        <p>Przykład:</p>
+                        <code class="example">wra17h45479:51.0.201.41<br>gracz123:192.168.1.1<br>player99:10.0.0.5</code>
+                    </div>
                     <div class="upload-area" id="uploadArea">
                         <input type="file" id="fileInput" accept=".txt" style="display: none;">
                         <div class="upload-icon">📤</div>
-                        <p>Przeciągnij plik .txt lub kliknij aby wybrać</p>
-                        <small>Format: nick|IP (jeden na linię)</small>
+                        <p>Przciągnij plik .txt lub kliknij aby wybrać</p>
+                        <small>Jeden wpis na linię</small>
                     </div>
                     <div id="uploadProgress" style="display: none;" class="upload-progress">
                         <div class="progress-bar">
